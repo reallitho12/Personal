@@ -16,6 +16,8 @@ public class Chess {
         {"R","N","B","Q","K","B","N","R"}};
     static int kingPositionW, kingPositionB;
     public static void main (String[] args) {
+        while (!"K".equals(chessBoard[kingPositionW/8][kingPositionW%8])) {kingPositionW++;}
+        while (!"k".equals(chessBoard[kingPositionB/8][kingPositionB%8])) {kingPositionB++;}
         // JFrame window = new JFrame("Chess Tutorial");
         // window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         // UserInterface ui = new UserInterface();
@@ -53,8 +55,8 @@ public class Chess {
         int r = i/8, c = i%8;
         for (int j=-2; j<=2; j++) {
             for (int k=-2; k<=2; k++) {
-                try {
-                    if (Math.abs(j*k)==2){
+                if (Math.abs(j*k)==2){
+                    try {
                         if (" ".equals(chessBoard[r+j][c+k]) || Character.isLowerCase(chessBoard[r+j][c+k].charAt(0))) {
                             oldPiece=chessBoard[r+j][c+k];
                             chessBoard[r][c] = " ";
@@ -65,8 +67,8 @@ public class Chess {
                             chessBoard[r][c] = "N";
                             chessBoard[r+j][c+k]=oldPiece;
                         }
-                    }
-                }catch (Exception e) {}
+                    } catch (Exception e) {}
+                }
             }
         }
         return list;
@@ -77,7 +79,7 @@ public class Chess {
         int temp = 1;
         for (int j=-1; j<=1; j++) {
             for (int k=-1; k<=1; k++) {
-                if (Math.abs(j) == Math.abs(k)){
+                if (Math.abs(j*k)==1) {
                     try {
                         while(" ".equals(chessBoard[r+temp*j][c+temp*k]))
                         {
@@ -114,7 +116,7 @@ public class Chess {
         int temp = 1;
         for (int j=-1; j<=1; j++) {
             for (int k=-1; k<=1; k++) {
-                if (Math.abs(j) != Math.abs(k)){
+                if (j*k == 0){
                     try {
                         while(" ".equals(chessBoard[r+temp*j][c+temp*k]))
                         {
@@ -206,6 +208,55 @@ public class Chess {
         return list;
     }
     public static boolean kingSafe(){
+        //bishop/queen
+        int temp = 1;
+        for (int j=-1; j<=1; j++) {
+            for (int k=-1; k<=1; k++) {
+                if (Math.abs(j*k)==1) {
+                    try {
+                        while(" ".equals(chessBoard[kingPositionW/8+temp*j][kingPositionW%8+temp*k])) 
+                        {
+                            temp++;
+                        }
+                        if ("b".equals(chessBoard[kingPositionW/8+temp*j][kingPositionW%8+temp*k]) ||
+                                "q".equals(chessBoard[kingPositionW/8+temp*j][kingPositionW%8+temp*k])) {
+                            return false;
+                        }
+                    } catch (Exception e) {}
+                    temp=1;
+                }
+            }
+        }
+        //rook/queen
+        for (int j=-1; j<=1; j++) {
+            for (int k=-1; k<=1; k++) {
+                if (j*k==0) {
+                    try {
+                        while(" ".equals(chessBoard[kingPositionW/8+temp*j][kingPositionW%8+temp*k])) 
+                        {
+                            temp++;
+                        }
+                        if ("r".equals(chessBoard[kingPositionW/8+temp*j][kingPositionW%8+temp*k]) ||
+                                "q".equals(chessBoard[kingPositionW/8+temp*j][kingPositionW%8+temp*k])) {
+                            return false;
+                        }
+                    } catch (Exception e) {}
+                    temp=1;
+                }
+            }
+        }
+        //knight
+        for (int j=-2; j<=2; j++) {
+            for (int k=-2; k<=2; k++) {
+                if (Math.abs(j*k) == 2) {
+                    try {
+                        if ("n".equals(chessBoard[kingPositionW/8+j][kingPositionW%8+k])) {
+                            return false;
+                        }
+                    } catch (Exception e) {}
+                }
+            }
+        }
         return true;
     }
 }
