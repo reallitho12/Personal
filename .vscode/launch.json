@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Chess",
+            "request": "launch",
+            "mainClass": "src.Chess",
+            "projectName": "Personal_1a94f639"
+        }
+    ]
+}
