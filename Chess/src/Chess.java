@@ -52,21 +52,21 @@ public class Chess {
         String list = "", oldPiece;
         int r = i/8, c = i%8;
         for (int j=-2; j<=2; j++) {
-            for (int k=-1; k<=1; k++) {
-                if (Math.abs(j) == 2 && Math.abs(k) == 1){
-                    try {
+            for (int k=-2; k<=2; k++) {
+                try {
+                    if (Math.abs(j*k)==2){
                         if (" ".equals(chessBoard[r+j][c+k]) || Character.isLowerCase(chessBoard[r+j][c+k].charAt(0))) {
                             oldPiece=chessBoard[r+j][c+k];
                             chessBoard[r][c] = " ";
-                            chessBoard[r+j][c+k] = "B";
+                            chessBoard[r+j][c+k] = "N";
                             if (kingSafe()) {
                                 list = list+r+c+(r+j)+(c+k)+oldPiece;
                             }
-                            chessBoard[r][c] = "B";
+                            chessBoard[r][c] = "N";
                             chessBoard[r+j][c+k]=oldPiece;
                         }
-                    }catch (Exception e) {}
-                }
+                    }
+                }catch (Exception e) {}
             }
         }
         return list;
