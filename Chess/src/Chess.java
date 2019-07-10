@@ -47,7 +47,72 @@ public class Chess {
         return list; //oldrow(0-7)oldcolumn(0-7), newrow(0-7)newcolumn(0-7), capturedpiece
     }
     public static String possibleP(int i) {
-        String list = "";
+        String list = "", oldPiece;
+        int r = i/8, c = i%8;
+        try {
+            //first move option
+            if (" ".equals(chessBoard[r-1][c]) && i >= 16) {
+                if (" ".equals(chessBoard[r-2][c]) && r == 6) {
+                    oldPiece=chessBoard[r-2][c];
+                    chessBoard[r][c] = " ";
+                    chessBoard[r-2][c] = "P";
+                    if (kingSafe()) {
+                        list = list+r+c+(r-2)+(c)+oldPiece;
+                    }
+                    chessBoard[r][c] = "P";
+                    chessBoard[r-2][c]=oldPiece;
+                }
+                oldPiece=chessBoard[r-1][c];
+                    chessBoard[r][c] = " ";
+                    chessBoard[r-1][c] = "P";
+                    if (kingSafe()) {
+                        list = list+r+c+(r-1)+(c)+oldPiece;
+                    }
+                    chessBoard[r][c] = "P";
+                    chessBoard[r-1][c]=oldPiece;
+            } else if (" ".equals(chessBoard[r-1][c]) && i < 16) {
+                String[] temp={"Q","R","B","N"};
+                    for (int l=0; l<4; l++) {
+                        oldPiece=chessBoard[r-1][c];
+                        chessBoard[r][c]=" ";
+                        chessBoard[r-1][c]=temp[l];
+                        if (kingSafe()) {
+                            //column1,column2,captured-piece,new-piece,P
+                            list=list+c+c+oldPiece+temp[l]+"P";
+                        }
+                        chessBoard[r][c]="P";
+                        chessBoard[r-1][c]=oldPiece;
+                    }
+            }
+        } catch (Exception e) {}
+        //capture, need to add en passant rule
+        for (int k =-1; k<=1; k+=2) {
+            try {
+                if (Character.isLowerCase(chessBoard[r-1][c+k].charAt(0)) && i >= 16) {
+                    oldPiece=chessBoard[r-1][c+k];
+                    chessBoard[r][c] = " ";
+                    chessBoard[r-1][c+k] = "P";
+                    if (kingSafe()) {
+                        list = list+r+c+(r-1)+(c+k)+oldPiece;
+                    }
+                    chessBoard[r][c] = "P";
+                    chessBoard[r-1][c+k]=oldPiece;
+                } else if (Character.isLowerCase(chessBoard[r-1][c+k].charAt(0)) && i < 16) {
+                    String[] temp={"Q","R","B","N"};
+                        for (int l=0; l<4; l++) {
+                            oldPiece=chessBoard[r-1][c+k];
+                            chessBoard[r][c]=" ";
+                            chessBoard[r-1][c+k]=temp[l];
+                            if (kingSafe()) {
+                                //column1,column2,captured-piece,new-piece,P
+                                list=list+c+(c+k)+oldPiece+temp[l]+"P";
+                            }
+                            chessBoard[r][c]="P";
+                            chessBoard[r-1][c+k]=oldPiece;
+                        }
+                    }
+            } catch (Exception e) {}
+        }
         return list;
     }
     public static String possibleN(int i) {
@@ -257,6 +322,30 @@ public class Chess {
                 }
             }
         }
+        //pawn
+        if (kingPositionW>=16){
+            for (int k=-1; k<=1; k+=2) {
+                try {
+                    if ("p".equals(chessBoard[kingPositionW/8-1][kingPositionW%8+k])) {
+                        return false;
+                    }
+                } catch (Exception e) {}
+            }
+        }
+        //king
+        for (int j=-1; j<=1; j++) {
+            for (int k=-1; k<=1; k++) {
+                if (j!=0 || k!=0) {
+                    try {
+                        if ("k".equals(chessBoard[kingPositionW/8+j][kingPositionW%8+k])) {
+                            return false;
+                        }
+                    } catch (Exception e) {}
+                }
+            }
+        }
+        
         return true;
+            
     }
 }
